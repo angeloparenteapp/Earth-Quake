@@ -1,22 +1,19 @@
 package com.angeloparenteapp.earthquake;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.support.v4.app.Fragment;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * A placeholder fragment containing a simple view.
+ * Created by angel on 06/02/2017.
  */
-public class MainActivityFragment extends Fragment {
 
-    private final String EARTHQUAKEJSON = "{\"type\":\"FeatureCollection\",\"metadata\":{\"generated\":1486378488000,\"url\":\"http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2017-01-01&endtime=2017-01-31&minmag=2&limit=10\",\"title\":\"USGS Earthquakes\",\"status\":200,\"api\":\"1.5.4\",\"limit\":10,\"offset\":1,\"count\":10},\"features\":[{\"type\":\"Feature\",\"properties\":{\"mag\":5.9,\"place\":\"33km NNE of Port-Olry, Vanuatu\",\"time\":1485819324000,\"updated\":1486171125001,\"tz\":660,\"url\":\"http://earthquake.usgs.gov/earthquakes/eventpage/us10007wbk\",\"detail\":\"http://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us10007wbk&format=geojson\",\"felt\":1,\"cdi\":3.8,\"mmi\":4.16,\"alert\":\"green\",\"status\":\"reviewed\",\"tsunami\":0,\"sig\":536,\"net\":\"us\",\"code\":\"10007wbk\",\"ids\":\",us10007wbk,\",\"sources\":\",us,\",\"types\":\",dyfi,geoserve,losspager,moment-tensor,origin,phase-data,shakemap,\",\"nst\":null,\"dmin\":5.971,\"rms\":0.81,\"gap\":21,\"magType\":\"mww\",\"type\":\"earthquake\",\"title\":\"M 5.9 - 33km NNE of Port-Olry, Vanuatu\"},\"geometry\":{\"type\":\"Point\",\"coordinates\":[167.171,-14.7729,79]},\"id\":\"us10007wbk\"},\n" +
+public class QueryUtils {
+
+    private static final String SAMPLE_JSON_RESPONSE = "{\"type\":\"FeatureCollection\",\"metadata\":{\"generated\":1486383751000,\"url\":\"http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2017-01-01&endtime=2017-01-31&minmag=2&limit=10\",\"title\":\"USGS Earthquakes\",\"status\":200,\"api\":\"1.5.4\",\"limit\":10,\"offset\":1,\"count\":10},\"features\":[{\"type\":\"Feature\",\"properties\":{\"mag\":5.9,\"place\":\"33km NNE of Port-Olry, Vanuatu\",\"time\":1485819324000,\"updated\":1486171125001,\"tz\":660,\"url\":\"http://earthquake.usgs.gov/earthquakes/eventpage/us10007wbk\",\"detail\":\"http://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us10007wbk&format=geojson\",\"felt\":1,\"cdi\":3.8,\"mmi\":4.16,\"alert\":\"green\",\"status\":\"reviewed\",\"tsunami\":0,\"sig\":536,\"net\":\"us\",\"code\":\"10007wbk\",\"ids\":\",us10007wbk,\",\"sources\":\",us,\",\"types\":\",dyfi,geoserve,losspager,moment-tensor,origin,phase-data,shakemap,\",\"nst\":null,\"dmin\":5.971,\"rms\":0.81,\"gap\":21,\"magType\":\"mww\",\"type\":\"earthquake\",\"title\":\"M 5.9 - 33km NNE of Port-Olry, Vanuatu\"},\"geometry\":{\"type\":\"Point\",\"coordinates\":[167.171,-14.7729,79]},\"id\":\"us10007wbk\"},\n" +
             "{\"type\":\"Feature\",\"properties\":{\"mag\":4.3,\"place\":\"18km WNW of Ashkasham, Afghanistan\",\"time\":1485818907670,\"updated\":1486248130040,\"tz\":270,\"url\":\"http://earthquake.usgs.gov/earthquakes/eventpage/us10007wbi\",\"detail\":\"http://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us10007wbi&format=geojson\",\"felt\":null,\"cdi\":null,\"mmi\":null,\"alert\":null,\"status\":\"reviewed\",\"tsunami\":0,\"sig\":284,\"net\":\"us\",\"code\":\"10007wbi\",\"ids\":\",us10007wbi,\",\"sources\":\",us,\",\"types\":\",geoserve,origin,phase-data,\",\"nst\":null,\"dmin\":0.716,\"rms\":1.02,\"gap\":68,\"magType\":\"mb\",\"type\":\"earthquake\",\"title\":\"M 4.3 - 18km WNW of Ashkasham, Afghanistan\"},\"geometry\":{\"type\":\"Point\",\"coordinates\":[71.3426,36.7554,165.25]},\"id\":\"us10007wbi\"},\n" +
             "{\"type\":\"Feature\",\"properties\":{\"mag\":3.3,\"place\":\"55km NNE of Road Town, British Virgin Islands\",\"time\":1485818531600,\"updated\":1486336329192,\"tz\":-240,\"url\":\"http://earthquake.usgs.gov/earthquakes/eventpage/pr17030005\",\"detail\":\"http://earthquake.usgs.gov/fdsnws/event/1/query?eventid=pr17030005&format=geojson\",\"felt\":0,\"cdi\":1,\"mmi\":null,\"alert\":null,\"status\":\"REVIEWED\",\"tsunami\":0,\"sig\":168,\"net\":\"pr\",\"code\":\"17030005\",\"ids\":\",pr17030005,\",\"sources\":\",pr,\",\"types\":\",dyfi,geoserve,origin,\",\"nst\":3,\"dmin\":1.00162154,\"rms\":0.1,\"gap\":345.6,\"magType\":\"Md\",\"type\":\"earthquake\",\"title\":\"M 3.3 - 55km NNE of Road Town, British Virgin Islands\"},\"geometry\":{\"type\":\"Point\",\"coordinates\":[-64.4125,18.8812,45]},\"id\":\"pr17030005\"},\n" +
             "{\"type\":\"Feature\",\"properties\":{\"mag\":3.2,\"place\":\"59km SE of Boca de Yuma, Dominican Republic\",\"time\":1485817730600,\"updated\":1486171400040,\"tz\":-300,\"url\":\"http://earthquake.usgs.gov/earthquakes/eventpage/pr17030004\",\"detail\":\"http://earthquake.usgs.gov/fdsnws/event/1/query?eventid=pr17030004&format=geojson\",\"felt\":null,\"cdi\":null,\"mmi\":null,\"alert\":null,\"status\":\"REVIEWED\",\"tsunami\":0,\"sig\":158,\"net\":\"pr\",\"code\":\"17030004\",\"ids\":\",pr17030004,us10007wdg,\",\"sources\":\",pr,us,\",\"types\":\",geoserve,origin,phase-data,\",\"nst\":10,\"dmin\":0.71236402,\"rms\":0.25,\"gap\":327.6,\"magType\":\"Md\",\"type\":\"earthquake\",\"title\":\"M 3.2 - 59km SE of Boca de Yuma, Dominican Republic\"},\"geometry\":{\"type\":\"Point\",\"coordinates\":[-68.1585,18.0802,28]},\"id\":\"pr17030004\"},\n" +
@@ -27,31 +24,35 @@ public class MainActivityFragment extends Fragment {
             "{\"type\":\"Feature\",\"properties\":{\"mag\":2.5,\"place\":\"12km ESE of Hennessey, Oklahoma\",\"time\":1485814863600,\"updated\":1485911628040,\"tz\":-360,\"url\":\"http://earthquake.usgs.gov/earthquakes/eventpage/us10007wb0\",\"detail\":\"http://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us10007wb0&format=geojson\",\"felt\":null,\"cdi\":null,\"mmi\":null,\"alert\":null,\"status\":\"reviewed\",\"tsunami\":0,\"sig\":96,\"net\":\"us\",\"code\":\"10007wb0\",\"ids\":\",us10007wb0,\",\"sources\":\",us,\",\"types\":\",geoserve,origin,phase-data,\",\"nst\":null,\"dmin\":null,\"rms\":0.17,\"gap\":26,\"magType\":\"ml\",\"type\":\"earthquake\",\"title\":\"M 2.5 - 12km ESE of Hennessey, Oklahoma\"},\"geometry\":{\"type\":\"Point\",\"coordinates\":[-97.7663,36.0736,5]},\"id\":\"us10007wb0\"},\n" +
             "{\"type\":\"Feature\",\"properties\":{\"mag\":4.5,\"place\":\"Indian Ocean Triple Junction\",\"time\":1485814404170,\"updated\":1485818145040,\"tz\":240,\"url\":\"http://earthquake.usgs.gov/earthquakes/eventpage/us10007wb4\",\"detail\":\"http://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us10007wb4&format=geojson\",\"felt\":null,\"cdi\":null,\"mmi\":null,\"alert\":null,\"status\":\"reviewed\",\"tsunami\":0,\"sig\":312,\"net\":\"us\",\"code\":\"10007wb4\",\"ids\":\",us10007wb4,\",\"sources\":\",us,\",\"types\":\",geoserve,origin,phase-data,\",\"nst\":null,\"dmin\":7.929,\"rms\":0.67,\"gap\":117,\"magType\":\"mb\",\"type\":\"earthquake\",\"title\":\"M 4.5 - Indian Ocean Triple Junction\"},\"geometry\":{\"type\":\"Point\",\"coordinates\":[65.5125,-27.4728,10]},\"id\":\"us10007wb4\"}],\"bbox\":[-118.9237,-27.4728,5,167.171,38.3951,165.25]}";
 
-    public MainActivityFragment() {
+    private QueryUtils() {
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+    public static ArrayList<EarthQuake> extractEarthquakes() {
 
-        ArrayList<EarthQuake> earthquakes = QueryUtils.extractEarthquakes();
+        ArrayList<EarthQuake> earthquakes = new ArrayList<>();
 
-        ListView listView = (ListView) rootView.findViewById(R.id.listView);
+        try {
 
-        final EarthQuakeAdapter earthQuakeAdapter = new EarthQuakeAdapter(rootView.getContext(), earthquakes);
+            JSONObject root = new JSONObject(SAMPLE_JSON_RESPONSE);
+            JSONArray features = root.getJSONArray("features");
 
-        listView.setAdapter(earthQuakeAdapter);
+            for (int i = 0; i < features.length(); i++){
+                JSONObject current = features.getJSONObject(i);
+                JSONObject properties = current.getJSONObject("properties");
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                EarthQuake currentEarthquake = earthQuakeAdapter.getItem(position);
-                Uri earthquakeUri = Uri.parse(currentEarthquake.getUrl());
-                Intent websiteIntent = new Intent(Intent.ACTION_VIEW, earthquakeUri);
-                startActivity(websiteIntent);
+                Double mag = properties.getDouble("mag");
+                String place = properties.getString("place");
+                long time = properties.getLong("time");
+                String url = properties.getString("url");
+
+                earthquakes.add(new EarthQuake(mag, place, time, url));
             }
-        });
 
-        return rootView;
+        } catch (JSONException e) {
+            Log.e("QueryUtils", "Problem parsing the earthquake JSON results", e);
+        }
+
+        return earthquakes;
     }
+
 }

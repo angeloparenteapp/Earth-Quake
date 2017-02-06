@@ -6,19 +6,19 @@ package com.angeloparenteapp.earthquake;
 
 public class EarthQuake {
 
-    private double mMagnitude;
+    private Double mMagnitude;
     private String mLocation;
     private long mTimeInMilliseconds;
     private String mUrl;
 
-    public EarthQuake(double magnitude, String location, long timeInMilliseconds, String url){
+    public EarthQuake(Double magnitude, String location, long timeInMilliseconds, String url){
         this.mMagnitude = magnitude;
         this.mLocation = location;
         this.mTimeInMilliseconds = timeInMilliseconds;
         this.mUrl = url;
     }
 
-    public double getMagnitude() {
+    public Double getMagnitude() {
         return mMagnitude;
     }
 
@@ -30,8 +30,7 @@ public class EarthQuake {
         return mTimeInMilliseconds;
     }
 
-    public String getUrl() {
+    public  String getUrl(){
         return mUrl;
     }
-
 }
