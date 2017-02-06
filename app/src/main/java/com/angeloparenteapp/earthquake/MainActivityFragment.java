@@ -34,7 +34,7 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        ArrayList<EarthQuake> earthquakes = QueryUtils.extractEarthquakes();
+        final ArrayList<EarthQuake> earthquakes = QueryUtils.extractEarthquakes();
 
         ListView listView = (ListView) rootView.findViewById(R.id.listView);
 
@@ -46,8 +46,9 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 EarthQuake currentEarthquake = earthQuakeAdapter.getItem(position);
-                Uri earthquakeUri = Uri.parse(currentEarthquake.getUrl());
-                Intent websiteIntent = new Intent(Intent.ACTION_VIEW, earthquakeUri);
+                String web = currentEarthquake.getUrl();
+                Intent websiteIntent = new Intent(getContext(), MyWebView.class);
+                websiteIntent.putExtra("url", web);
                 startActivity(websiteIntent);
             }
         });
