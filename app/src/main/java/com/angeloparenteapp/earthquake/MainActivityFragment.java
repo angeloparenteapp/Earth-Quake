@@ -41,9 +41,9 @@ public class MainActivityFragment extends Fragment {
 
                 if (isOnline()) {
                     EarthQuake currentEarthquake = earthQuakeAdapter.getItem(position);
-                    String web = currentEarthquake.getUrl();
+                    String url = currentEarthquake.getUrl();
                     Intent websiteIntent = new Intent(getContext(), MyWebView.class);
-                    websiteIntent.putExtra("url", web);
+                    websiteIntent.putExtra("url", url);
                     startActivity(websiteIntent);
                 } else {
                     Toast.makeText(getContext(), "You need a network connection for this", Toast.LENGTH_SHORT).show();
