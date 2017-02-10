@@ -41,8 +41,8 @@ public class MainActivityFragment extends Fragment {
     final String url = "http://earthquake.usgs.gov/fdsnws/event/1/" +
             "query?format=geojson&" +
             "starttime=2017-01-01&" +
-            "endtime=2017-01-31&" +
-            "orderby=time-asc&" +
+            "endtime=2017-02-10&" +
+            "orderby=time&" +
             "minlatitude=37&" +
             "maxlatitude=46&" +
             "minlongitude=6&" +
@@ -56,7 +56,12 @@ public class MainActivityFragment extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        startVolley();
+        if (isOnline()) {
+            startVolley();
+            Log.d("TEST", "isonline");
+        } else {
+            Toast.makeText(getContext(), "You need an internet connection", Toast.LENGTH_SHORT).show();
+        }
 
         listView = (ListView) rootView.findViewById(R.id.listView);
 
@@ -92,6 +97,7 @@ public class MainActivityFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         setEarthQuakes(response);
+                        earthQuakeAdapter.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {
 
