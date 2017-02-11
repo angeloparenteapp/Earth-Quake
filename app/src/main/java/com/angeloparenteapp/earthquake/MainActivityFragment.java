@@ -40,12 +40,13 @@ public class MainActivityFragment extends Fragment {
 
     final String url = "http://earthquake.usgs.gov/fdsnws/event/1/" +
             "query?format=geojson&" +
-            "starttime=2017-01-01&" +
+            "starttime=2016-12-01&" +
             "endtime=2017-02-10&" +
+            "minmagnitude=3&" +
             "orderby=time&" +
-            "minlatitude=37&" +
-            "maxlatitude=46&" +
-            "minlongitude=6&" +
+            "minlatitude=35&" +
+            "maxlatitude=43&" +
+            "minlongitude=5&" +
             "maxlongitude=18";
 
     public MainActivityFragment() {
