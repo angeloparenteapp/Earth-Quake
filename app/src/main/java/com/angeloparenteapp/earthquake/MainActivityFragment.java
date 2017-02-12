@@ -6,7 +6,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,13 +38,14 @@ public class MainActivityFragment extends Fragment {
     EarthQuakeAdapter earthQuakeAdapter;
     RequestQueue queue;
     ListView listView;
+    SwipeRefreshLayout swipeRefreshLayout;
     public static final String TAG = "MyTag";
 
     final String url = "http://earthquake.usgs.gov/fdsnws/event/1/" +
             "query?format=geojson&" +
             "starttime=2016-12-01&" +
-            "endtime=2017-02-10&" +
-            "minmagnitude=3&" +
+            "endtime=2017-02-28&" +
+            "minmagnitude=1&" +
             "orderby=time&" +
             "minlatitude=35&" +
             "maxlatitude=43&" +
@@ -57,12 +60,26 @@ public class MainActivityFragment extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeLayout);
+
         if (isOnline()) {
-            startVolley();
-            Log.d("TEST", "isonline");
+            swipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshLayout.setRefreshing(true);
+                    startVolley();
+                }
+            });
         } else {
             Toast.makeText(getContext(), "You need an internet connection", Toast.LENGTH_SHORT).show();
         }
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                startVolley();
+            }
+        });
 
         listView = (ListView) rootView.findViewById(R.id.listView);
 
@@ -90,6 +107,8 @@ public class MainActivityFragment extends Fragment {
     }
 
     public void startVolley() {
+        swipeRefreshLayout.setRefreshing(true);
+
         queue = Volley.newRequestQueue(getContext());
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
@@ -99,11 +118,19 @@ public class MainActivityFragment extends Fragment {
                     public void onResponse(JSONObject response) {
                         setEarthQuakes(response);
                         earthQuakeAdapter.notifyDataSetChanged();
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse.statusCode == 400){
+                            Toast.makeText(getContext(), "Error 400: Bed Request", Toast.LENGTH_SHORT).show();
+                        } else{
+                            Toast.makeText(getContext(), "Some problem", Toast.LENGTH_SHORT).show();
+                        }
+                        swipeRefreshLayout.setRefreshing(false);
+
                     }
                 });
         jsObjRequest.setTag(TAG);
