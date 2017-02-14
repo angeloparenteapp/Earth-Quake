@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,14 +42,14 @@ public class MainActivityFragment extends Fragment {
 
     final String url = "http://earthquake.usgs.gov/fdsnws/event/1/" +
             "query?format=geojson&" +
-            "starttime=2016-12-01&" +
-            "endtime=2017-02-28&" +
+            "starttime=2017-01-01&" +
+            "endtime=2017-12-31&" +
             "minmagnitude=1&" +
             "orderby=time&" +
-            "minlatitude=35&" +
-            "maxlatitude=43&" +
-            "minlongitude=5&" +
-            "maxlongitude=18";
+            "minlatitude=42&" +
+            "maxlatitude=69&" +
+            "minlongitude=-140&" +
+            "maxlongitude=-54";
 
     public MainActivityFragment() {
     }
@@ -77,7 +76,12 @@ public class MainActivityFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                startVolley();
+                if (isOnline()) {
+                    startVolley();
+                } else {
+                    Toast.makeText(getContext(), "You need a network connection for this", Toast.LENGTH_SHORT).show();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
             }
         });
 
@@ -124,9 +128,9 @@ public class MainActivityFragment extends Fragment {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if (error.networkResponse.statusCode == 400){
+                        if (error.networkResponse.statusCode == 400) {
                             Toast.makeText(getContext(), "Error 400: Bed Request", Toast.LENGTH_SHORT).show();
-                        } else{
+                        } else {
                             Toast.makeText(getContext(), "Some problem", Toast.LENGTH_SHORT).show();
                         }
                         swipeRefreshLayout.setRefreshing(false);
@@ -145,6 +149,11 @@ public class MainActivityFragment extends Fragment {
     }
 
     public ArrayList<EarthQuake> setEarthQuakes(JSONObject response) {
+
+        if (earthquakes != null || earthQuakeAdapter != null) {
+            earthQuakeAdapter.clear();
+            earthquakes.clear();
+        }
 
         try {
             JSONArray features = response.getJSONArray("features");
