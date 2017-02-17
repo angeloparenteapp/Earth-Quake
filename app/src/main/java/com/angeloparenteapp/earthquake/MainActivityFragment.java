@@ -1,9 +1,6 @@
 package com.angeloparenteapp.earthquake;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -29,7 +26,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * A placeholder fragment containing a simple view.
+ * A placeholder fragment.
  */
 public class MainActivityFragment extends Fragment {
 
@@ -38,7 +35,7 @@ public class MainActivityFragment extends Fragment {
     RequestQueue queue;
     ListView listView;
     SwipeRefreshLayout swipeRefreshLayout;
-    public static final String TAG = "MyTag";
+    public static final String TAG = "QueueTag";
 
     final String url = "http://earthquake.usgs.gov/fdsnws/event/1/" +
             "query?format=geojson&" +
