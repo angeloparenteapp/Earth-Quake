@@ -44,12 +44,12 @@ public class MainActivityFragment extends Fragment {
             "query?format=geojson&" +
             "starttime=2017-01-01&" +
             "endtime=2017-12-31&" +
-            "minmagnitude=1&" +
+            "minmagnitude=3&" +
             "orderby=time&" +
-            "minlatitude=42&" +
+            "minlatitude=31&" +
             "maxlatitude=69&" +
-            "minlongitude=-140&" +
-            "maxlongitude=-54";
+            "minlongitude=-141&" +
+            "maxlongitude=-53";
 
     public MainActivityFragment() {
     }
@@ -61,11 +61,10 @@ public class MainActivityFragment extends Fragment {
 
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeLayout);
 
-        if (isOnline()) {
+        if (QueryUtils.isOnline(getContext())) {
             swipeRefreshLayout.post(new Runnable() {
                 @Override
                 public void run() {
-                    swipeRefreshLayout.setRefreshing(true);
                     startVolley();
                 }
             });
@@ -76,7 +75,7 @@ public class MainActivityFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (isOnline()) {
+                if (QueryUtils.isOnline(getContext())) {
                     startVolley();
                 } else {
                     Toast.makeText(getContext(), "You need a network connection for this", Toast.LENGTH_SHORT).show();
@@ -95,7 +94,7 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
-                if (isOnline()) {
+                if (QueryUtils.isOnline(getContext())) {
                     EarthQuake currentEarthquake = earthQuakeAdapter.getItem(position);
                     String url = currentEarthquake.getUrl();
                     Intent websiteIntent = new Intent(getContext(), MyWebView.class);
@@ -139,13 +138,6 @@ public class MainActivityFragment extends Fragment {
                 });
         jsObjRequest.setTag(TAG);
         queue.add(jsObjRequest);
-    }
-
-    public boolean isOnline() {
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
     }
 
     public ArrayList<EarthQuake> setEarthQuakes(JSONObject response) {

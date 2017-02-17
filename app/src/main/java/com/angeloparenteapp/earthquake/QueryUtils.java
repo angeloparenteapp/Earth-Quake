@@ -1,6 +1,8 @@
 package com.angeloparenteapp.earthquake;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
@@ -93,4 +95,10 @@ public class QueryUtils {
         return ContextCompat.getColor(context, magnitudeColorResourceId);
     }
 
+    public static boolean isOnline(Context context) {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
 }
