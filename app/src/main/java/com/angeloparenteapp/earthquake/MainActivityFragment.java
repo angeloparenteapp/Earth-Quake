@@ -33,7 +33,7 @@ public class MainActivityFragment extends Fragment {
     ArrayList<EarthQuake> earthquakes = new ArrayList<>();
     EarthQuakeAdapter earthQuakeAdapter;
     RequestQueue queue;
-    ListView listView;
+    ListView listView; 
     SwipeRefreshLayout swipeRefreshLayout;
     public static final String TAG = "QueueTag";
 
