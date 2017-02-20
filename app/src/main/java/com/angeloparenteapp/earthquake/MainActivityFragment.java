@@ -30,6 +30,7 @@ import java.util.ArrayList;
  */
 public class MainActivityFragment extends Fragment {
 
+    //some variables
     ArrayList<EarthQuake> earthquakes = new ArrayList<>();
     EarthQuakeAdapter earthQuakeAdapter;
     RequestQueue queue;
