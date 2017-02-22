@@ -60,12 +60,7 @@ public class MainActivityFragment extends Fragment {
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeLayout);
 
         if (QueryUtils.isOnline(getContext())) {
-            swipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    startVolley();
-                }
-            });
+            startVolley();
         } else {
             Toast.makeText(getContext(), "You need an internet connection", Toast.LENGTH_SHORT).show();
         }
