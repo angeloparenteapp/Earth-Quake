@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -36,6 +37,7 @@ public class MainActivityFragment extends Fragment {
     RequestQueue queue;
     ListView listView;
     SwipeRefreshLayout swipeRefreshLayout;
+    private TextView mEmptyStateTextView;
     public static final String TAG = "QueueTag";
 
     final String url = "http://earthquake.usgs.gov/fdsnws/event/1/" +
@@ -59,10 +61,16 @@ public class MainActivityFragment extends Fragment {
 
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeLayout);
 
+        listView = (ListView) rootView.findViewById(R.id.listView);
+
+        mEmptyStateTextView = (TextView) rootView.findViewById(R.id.empty_view);
+
+        listView.setEmptyView(mEmptyStateTextView);
+
         if (QueryUtils.isOnline(getContext())) {
             startVolley();
         } else {
-            Toast.makeText(getContext(), "You need an internet connection", Toast.LENGTH_SHORT).show();
+            mEmptyStateTextView.setText(R.string.no_internet);
         }
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -71,13 +79,11 @@ public class MainActivityFragment extends Fragment {
                 if (QueryUtils.isOnline(getContext())) {
                     startVolley();
                 } else {
-                    Toast.makeText(getContext(), "You need a network connection for this", Toast.LENGTH_SHORT).show();
+                    mEmptyStateTextView.setText(R.string.no_internet);
                     swipeRefreshLayout.setRefreshing(false);
                 }
             }
         });
-
-        listView = (ListView) rootView.findViewById(R.id.listView);
 
         earthQuakeAdapter = new EarthQuakeAdapter(getContext(), earthquakes);
 
@@ -94,8 +100,7 @@ public class MainActivityFragment extends Fragment {
                     websiteIntent.putExtra("url", url);
                     startActivity(websiteIntent);
                 } else {
-                    Toast.makeText(getContext(), "You need a network connection for this", Toast.LENGTH_SHORT).show();
-                }
+                    mEmptyStateTextView.setText(R.string.no_internet);                }
             }
         });
 
@@ -121,9 +126,9 @@ public class MainActivityFragment extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         if (error.networkResponse.statusCode == 400) {
-                            Toast.makeText(getContext(), "Error 400: Bed Request", Toast.LENGTH_SHORT).show();
+                            mEmptyStateTextView.setText(R.string.error_400);
                         } else {
-                            Toast.makeText(getContext(), "Some problem", Toast.LENGTH_SHORT).show();
+                            mEmptyStateTextView.setText(R.string.some_problem);
                         }
                         swipeRefreshLayout.setRefreshing(false);
 
@@ -135,10 +140,7 @@ public class MainActivityFragment extends Fragment {
 
     public ArrayList<EarthQuake> setEarthQuakes(JSONObject response) {
 
-        if (earthquakes != null || earthQuakeAdapter != null) {
-            earthQuakeAdapter.clear();
-            earthquakes.clear();
-        }
+        earthQuakeAdapter.clear();
 
         try {
             JSONArray features = response.getJSONArray("features");
