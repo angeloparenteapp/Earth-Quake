@@ -67,6 +67,8 @@ public class MainActivityFragment extends Fragment {
 
         listView.setEmptyView(mEmptyStateTextView);
 
+        earthQuakeAdapter = new EarthQuakeAdapter(getContext(), earthquakes);
+
         if (QueryUtils.isOnline(getContext())) {
             startVolley();
         } else {
@@ -79,13 +81,12 @@ public class MainActivityFragment extends Fragment {
                 if (QueryUtils.isOnline(getContext())) {
                     startVolley();
                 } else {
+                    earthQuakeAdapter.clear();
                     mEmptyStateTextView.setText(R.string.no_internet);
                     swipeRefreshLayout.setRefreshing(false);
                 }
             }
         });
-
-        earthQuakeAdapter = new EarthQuakeAdapter(getContext(), earthquakes);
 
         listView.setAdapter(earthQuakeAdapter);
 
