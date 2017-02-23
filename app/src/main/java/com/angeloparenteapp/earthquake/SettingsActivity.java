@@ -30,6 +30,9 @@ public class SettingsActivity extends AppCompatActivity {
 
             Preference orderBy = findPreference(getString(R.string.settings_order_by_key));
             bindPreferenceSummaryToValue(orderBy);
+
+            Preference limit = findPreference(getString(R.string.settings_earthquakes_displayed_key));
+            bindPreferenceSummaryToValue(limit);
         }
 
         private void bindPreferenceSummaryToValue(Preference preference) {

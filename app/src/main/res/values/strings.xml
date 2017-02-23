@@ -4,6 +4,7 @@
     <string name="webViewLabel">Earthquake Detail</string>
     <string name="no_internet">You need an internet connection.</string>
     <string name="error_400">Error 400: Bed Request</string>
+    <string name="json_error">Json Error</string>
     <string name="some_problem">Some problem</string>
     <string name="title_activity_settings">Settings</string>
 
@@ -23,5 +24,9 @@
 
     <string name="settings_order_by_most_recent_label">Most Recent</string>
     <string name="settings_order_by_most_recent_value" translatable="false">time</string>
+
+    <string name="settings_earthquakes_displayed_label">How many earthquakes do you want to see?</string>
+    <string name="settings_earthquakes_displayed_key" translatable="false">numb_earthquakes</string>
+    <string name="settings_earthquakes_displayed_default" translatable="false">30</string>
 
 </resources>

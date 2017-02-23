@@ -33,7 +33,6 @@ import java.util.ArrayList;
  */
 public class MainActivityFragment extends Fragment {
 
-    //some variables
     ArrayList<EarthQuake> earthquakes = new ArrayList<>();
     EarthQuakeAdapter earthQuakeAdapter;
     RequestQueue queue;
@@ -44,7 +43,6 @@ public class MainActivityFragment extends Fragment {
     private static final String USGS_REQUEST_URL = "http://earthquake.usgs.gov/fdsnws/event/1/query";
 
     private String url = "";
-    String minMagnitude;
 
     public MainActivityFragment() {
     }
@@ -54,15 +52,12 @@ public class MainActivityFragment extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        buildUrl();
-
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeLayout);
         listView = (ListView) rootView.findViewById(R.id.listView);
         mEmptyStateTextView = (TextView) rootView.findViewById(R.id.empty_view);
 
         listView.setEmptyView(mEmptyStateTextView);
         earthQuakeAdapter = new EarthQuakeAdapter(getContext(), earthquakes);
-        listView.setAdapter(earthQuakeAdapter);
 
         if (QueryUtils.isOnline(getContext())) {
             startVolley();
@@ -83,6 +78,8 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
+        listView.setAdapter(earthQuakeAdapter);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -94,7 +91,8 @@ public class MainActivityFragment extends Fragment {
                     websiteIntent.putExtra("url", url);
                     startActivity(websiteIntent);
                 } else {
-                    mEmptyStateTextView.setText(R.string.no_internet);                }
+                    mEmptyStateTextView.setText(R.string.no_internet);
+                }
             }
         });
 
@@ -102,6 +100,8 @@ public class MainActivityFragment extends Fragment {
     }
 
     public void startVolley() {
+        buildUrl();
+
         swipeRefreshLayout.setRefreshing(true);
 
         queue = Volley.newRequestQueue(getContext());
@@ -111,21 +111,24 @@ public class MainActivityFragment extends Fragment {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        setEarthQuakes(response);
-                        earthQuakeAdapter.notifyDataSetChanged();
+                        if (response != null) {
+                            setEarthQuakes(response);
+                            earthQuakeAdapter.notifyDataSetChanged();
+                        } else {
+                            mEmptyStateTextView.setText(R.string.json_error);
+                        }
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if (error.networkResponse.statusCode == 400) {
+                        if (error == null) {
                             mEmptyStateTextView.setText(R.string.error_400);
                         } else {
                             mEmptyStateTextView.setText(R.string.some_problem);
                         }
                         swipeRefreshLayout.setRefreshing(false);
-
                     }
                 });
         jsObjRequest.setTag(TAG);
@@ -157,35 +160,45 @@ public class MainActivityFragment extends Fragment {
         return earthquakes;
     }
 
-    private String buildUrl(){
+    private Void buildUrl() {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        minMagnitude = sharedPrefs.getString(
+        String minMagnitude = sharedPrefs.getString(
                 getString(R.string.settings_min_magnitude_key),
                 getString(R.string.settings_min_magnitude_default));
 
         String orderBy = sharedPrefs.getString(
                 getString(R.string.settings_order_by_key),
-                getString(R.string.settings_order_by_default)
-        );
+                getString(R.string.settings_order_by_default));
+
+        String limit = sharedPrefs.getString(
+                getString(R.string.settings_earthquakes_displayed_key),
+                getString(R.string.settings_earthquakes_displayed_default));
 
         Uri baseUri = Uri.parse(USGS_REQUEST_URL);
 
         Uri.Builder uriBuilder = baseUri.buildUpon();
 
         uriBuilder.appendQueryParameter("format", "geojson");
-        uriBuilder.appendQueryParameter("limit", "20");
+        uriBuilder.appendQueryParameter("limit", limit);
         uriBuilder.appendQueryParameter("minmag", minMagnitude);
         uriBuilder.appendQueryParameter("orderby", orderBy);
 
         url = uriBuilder.toString();
-        return url;
+        return null;
     }
 
     @Override
     public void onResume() {
-        buildUrl();
-        startVolley();
+
+        if (QueryUtils.isOnline(getContext())) {
+            startVolley();
+        } else {
+            earthQuakeAdapter.clear();
+            mEmptyStateTextView.setText(R.string.no_internet);
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
         super.onResume();
     }
 

@@ -110,9 +110,10 @@ public class QueryUtils {
      * @return true or false depends on if the phone has internet connection.
      */
     public static boolean isOnline(Context context) {
-        ConnectivityManager connMgr = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
+
+        return (networkInfo != null && networkInfo.isConnected() && networkInfo.isAvailable());
     }
 }
