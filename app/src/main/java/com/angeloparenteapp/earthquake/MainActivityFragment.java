@@ -1,6 +1,9 @@
 package com.angeloparenteapp.earthquake;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -11,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -39,17 +41,10 @@ public class MainActivityFragment extends Fragment {
     SwipeRefreshLayout swipeRefreshLayout;
     private TextView mEmptyStateTextView;
     public static final String TAG = "QueueTag";
+    private static final String USGS_REQUEST_URL = "http://earthquake.usgs.gov/fdsnws/event/1/query";
 
-    final String url = "http://earthquake.usgs.gov/fdsnws/event/1/" +
-            "query?format=geojson&" +
-            "starttime=2017-01-01&" +
-            "endtime=2017-12-31&" +
-            "minmagnitude=3&" +
-            "orderby=time&" +
-            "minlatitude=31&" +
-            "maxlatitude=69&" +
-            "minlongitude=-141&" +
-            "maxlongitude=-53";
+    private String url = "";
+    String minMagnitude;
 
     public MainActivityFragment() {
     }
@@ -59,15 +54,15 @@ public class MainActivityFragment extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
+        buildUrl();
+
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeLayout);
-
         listView = (ListView) rootView.findViewById(R.id.listView);
-
         mEmptyStateTextView = (TextView) rootView.findViewById(R.id.empty_view);
 
         listView.setEmptyView(mEmptyStateTextView);
-
         earthQuakeAdapter = new EarthQuakeAdapter(getContext(), earthquakes);
+        listView.setAdapter(earthQuakeAdapter);
 
         if (QueryUtils.isOnline(getContext())) {
             startVolley();
@@ -87,8 +82,6 @@ public class MainActivityFragment extends Fragment {
                 }
             }
         });
-
-        listView.setAdapter(earthQuakeAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -162,6 +155,38 @@ public class MainActivityFragment extends Fragment {
             Log.e("QueryUtils", "Problem parsing the earthquake JSON results", e);
         }
         return earthquakes;
+    }
+
+    private String buildUrl(){
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        minMagnitude = sharedPrefs.getString(
+                getString(R.string.settings_min_magnitude_key),
+                getString(R.string.settings_min_magnitude_default));
+
+        String orderBy = sharedPrefs.getString(
+                getString(R.string.settings_order_by_key),
+                getString(R.string.settings_order_by_default)
+        );
+
+        Uri baseUri = Uri.parse(USGS_REQUEST_URL);
+
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+
+        uriBuilder.appendQueryParameter("format", "geojson");
+        uriBuilder.appendQueryParameter("limit", "20");
+        uriBuilder.appendQueryParameter("minmag", minMagnitude);
+        uriBuilder.appendQueryParameter("orderby", orderBy);
+
+        url = uriBuilder.toString();
+        return url;
+    }
+
+    @Override
+    public void onResume() {
+        buildUrl();
+        startVolley();
+        super.onResume();
     }
 
     @Override
