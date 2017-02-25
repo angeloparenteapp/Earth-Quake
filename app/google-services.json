@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "783714856562",
+    "firebase_url": "https://earthquakes-c3655.firebaseio.com",
+    "project_id": "earthquakes-c3655",
+    "storage_bucket": "earthquakes-c3655.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:783714856562:android:9ef3cfdfa8633fb7",
+        "android_client_info": {
+          "package_name": "com.angeloparenteapp.earthquake"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "783714856562-gu82svudsnq40rem8uakivh87i78fd25.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhfIU57rqN3iMa0TAfJ4nbayhxqCkl21A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

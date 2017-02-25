@@ -36,17 +36,16 @@ public class EarthQuakeAdapter extends ArrayAdapter<EarthQuake> {
         String locationOffset;
 
         //If an empty view, populate
-        View listItemView = convertView;
-        if (listItemView == null) {
-            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.earthquake_list_item, parent, false);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.earthquake_list_item, parent, false);
         }
 
         //All views
-        TextView magnitudeTextView = (TextView) listItemView.findViewById(R.id.magnitude);
-        TextView locationOffsetView = (TextView) listItemView.findViewById(R.id.location_offset);
-        TextView primaryLocationView = (TextView) listItemView.findViewById(R.id.primary_location);
-        TextView timeTextView = (TextView) listItemView.findViewById(R.id.date);
-        TextView timeView = (TextView) listItemView.findViewById(R.id.time);
+        TextView magnitudeTextView = (TextView) convertView.findViewById(R.id.magnitude);
+        TextView locationOffsetView = (TextView) convertView.findViewById(R.id.location_offset);
+        TextView primaryLocationView = (TextView) convertView.findViewById(R.id.primary_location);
+        TextView timeTextView = (TextView) convertView.findViewById(R.id.date);
+        TextView timeView = (TextView) convertView.findViewById(R.id.time);
 
         //Current listView item to populate
         EarthQuake currentEarthQuake = getItem(position);
@@ -93,6 +92,6 @@ public class EarthQuakeAdapter extends ArrayAdapter<EarthQuake> {
         timeTextView.setText(dateToDisplay);
         timeView.setText(formattedTime);
 
-        return listItemView;
+        return convertView;
     }
 }

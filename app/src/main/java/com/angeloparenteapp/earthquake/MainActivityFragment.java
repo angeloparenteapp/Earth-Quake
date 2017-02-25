@@ -21,6 +21,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +44,6 @@ public class MainActivityFragment extends Fragment {
     private TextView mEmptyStateTextView;
     public static final String TAG = "QueueTag";
     private static final String USGS_REQUEST_URL = "http://earthquake.usgs.gov/fdsnws/event/1/query";
-
     private String url = "";
 
     public MainActivityFragment() {
@@ -52,6 +54,8 @@ public class MainActivityFragment extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
+        adMob(rootView);
+
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeLayout);
         listView = (ListView) rootView.findViewById(R.id.listView);
         mEmptyStateTextView = (TextView) rootView.findViewById(R.id.empty_view);
@@ -60,6 +64,7 @@ public class MainActivityFragment extends Fragment {
         earthQuakeAdapter = new EarthQuakeAdapter(getContext(), earthquakes);
 
         if (QueryUtils.isOnline(getContext())) {
+            adMob(rootView);
             startVolley();
         } else {
             mEmptyStateTextView.setText(R.string.no_internet);
@@ -69,6 +74,7 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onRefresh() {
                 if (QueryUtils.isOnline(getContext())) {
+                    adMob(rootView);
                     startVolley();
                 } else {
                     earthQuakeAdapter.clear();
@@ -86,10 +92,12 @@ public class MainActivityFragment extends Fragment {
 
                 if (QueryUtils.isOnline(getContext())) {
                     EarthQuake currentEarthquake = earthQuakeAdapter.getItem(position);
-                    String url = currentEarthquake.getUrl();
-                    Intent websiteIntent = new Intent(getContext(), MyWebView.class);
-                    websiteIntent.putExtra("url", url);
-                    startActivity(websiteIntent);
+                    if (currentEarthquake != null) {
+                        String url = currentEarthquake.getUrl();
+                        Intent websiteIntent = new Intent(getContext(), MyWebView.class);
+                        websiteIntent.putExtra("url", url);
+                        startActivity(websiteIntent);
+                    }
                 } else {
                     mEmptyStateTextView.setText(R.string.no_internet);
                 }
@@ -131,6 +139,11 @@ public class MainActivityFragment extends Fragment {
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 });
+
+        if (earthQuakeAdapter.isEmpty()) {
+            mEmptyStateTextView.setText(R.string.no_earthquakes);
+        }
+
         jsObjRequest.setTag(TAG);
         queue.add(jsObjRequest);
     }
@@ -160,7 +173,7 @@ public class MainActivityFragment extends Fragment {
         return earthquakes;
     }
 
-    private Void buildUrl() {
+    private void buildUrl() {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         String minMagnitude = sharedPrefs.getString(
@@ -185,7 +198,6 @@ public class MainActivityFragment extends Fragment {
         uriBuilder.appendQueryParameter("orderby", orderBy);
 
         url = uriBuilder.toString();
-        return null;
     }
 
     @Override
@@ -209,5 +221,13 @@ public class MainActivityFragment extends Fragment {
         if (queue != null) {
             queue.cancelAll(TAG);
         }
+    }
+
+    public void adMob(View view) {
+        MobileAds.initialize(getContext(), "your id");
+
+        AdView mAdView = (AdView) view.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 }
