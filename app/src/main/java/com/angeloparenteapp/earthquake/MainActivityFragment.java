@@ -29,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 
 /**
@@ -41,9 +42,10 @@ public class MainActivityFragment extends Fragment {
     RequestQueue queue;
     ListView listView;
     SwipeRefreshLayout swipeRefreshLayout;
-    private TextView mEmptyStateTextView;
-    public static final String TAG = "QueueTag";
-    private static final String USGS_REQUEST_URL = "http://earthquake.usgs.gov/fdsnws/event/1/query";
+    TextView mEmptyStateTextView;
+
+    private static final String TAG = "QueueTag";
+    private static final String BASE_URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/";
     private String url = "";
 
     public MainActivityFragment() {
@@ -134,15 +136,11 @@ public class MainActivityFragment extends Fragment {
                         if (error == null) {
                             mEmptyStateTextView.setText(R.string.error_400);
                         } else {
-                            mEmptyStateTextView.setText(R.string.some_problem);
+                            mEmptyStateTextView.setText(getString(R.string.server_unknown_error));
                         }
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 });
-
-        if (earthQuakeAdapter.isEmpty()) {
-            mEmptyStateTextView.setText(R.string.no_earthquakes);
-        }
 
         jsObjRequest.setTag(TAG);
         queue.add(jsObjRequest);
@@ -170,34 +168,24 @@ public class MainActivityFragment extends Fragment {
         } catch (JSONException e) {
             Log.e("QueryUtils", "Problem parsing the earthquake JSON results", e);
         }
+
+        if (earthQuakeAdapter.isEmpty()) {
+            mEmptyStateTextView.setText(R.string.no_earthquakes);
+        }
+
         return earthquakes;
     }
 
     private void buildUrl() {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        String minMagnitude = sharedPrefs.getString(
-                getString(R.string.settings_min_magnitude_key),
-                getString(R.string.settings_min_magnitude_default));
+        String date = sharedPrefs.getString(
+                getString(R.string.date_picker_key),
+                getString(R.string.date_picker_default));
 
-        String orderBy = sharedPrefs.getString(
-                getString(R.string.settings_order_by_key),
-                getString(R.string.settings_order_by_default));
+        url = BASE_URL + date;
 
-        String limit = sharedPrefs.getString(
-                getString(R.string.settings_earthquakes_displayed_key),
-                getString(R.string.settings_earthquakes_displayed_default));
-
-        Uri baseUri = Uri.parse(USGS_REQUEST_URL);
-
-        Uri.Builder uriBuilder = baseUri.buildUpon();
-
-        uriBuilder.appendQueryParameter("format", "geojson");
-        uriBuilder.appendQueryParameter("limit", limit);
-        uriBuilder.appendQueryParameter("minmag", minMagnitude);
-        uriBuilder.appendQueryParameter("orderby", orderBy);
-
-        url = uriBuilder.toString();
+        Log.d("URL", url);
     }
 
     @Override
@@ -224,7 +212,7 @@ public class MainActivityFragment extends Fragment {
     }
 
     public void adMob(View view) {
-        MobileAds.initialize(getContext(), "your id");
+        MobileAds.initialize(getContext(), "Your id");
 
         AdView mAdView = (AdView) view.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();

@@ -3,6 +3,7 @@ package com.angeloparenteapp.earthquake;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -116,4 +117,5 @@ public class QueryUtils {
 
         return (networkInfo != null && networkInfo.isConnected() && networkInfo.isAvailable());
     }
+
 }
