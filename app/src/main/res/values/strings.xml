@@ -7,6 +7,7 @@
     <string name="json_error">Json Error</string>
     <string name="server_unknown_error">Server error: </string>
     <string name="no_earthquakes">No earthquakes\n Try to change parameter in settings</string>
+    <string name="settings_menu_item">Settings</string>
     <string name="settings_title">Earthquake Settings</string>
 
     <string name="banner_ad_unit_id">Your id</string>
