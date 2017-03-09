@@ -8,7 +8,7 @@
         android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="50dp">
+        android:layout_above="@+id/adView">
 
         <ListView
             android:id="@+id/listView"
@@ -34,4 +34,5 @@
         android:gravity="center"
         android:textAppearance="?android:textAppearanceMedium"
         android:textColor="#000000" />
+
 </RelativeLayout>

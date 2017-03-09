@@ -18,19 +18,10 @@
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MyWebView"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/webViewLabel"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
+
         <activity
             android:name=".SettingsActivity"
             android:label="@string/settings_title"
@@ -40,6 +31,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.angeloparenteapp.earthquake.MainActivity" />
         </activity>
+
     </application>
 
 </manifest>
