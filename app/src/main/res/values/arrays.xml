@@ -15,4 +15,14 @@
         <item>@string/settings_date_picker_all_month_value</item>
     </string-array>
 
+    <string-array name="theme_style_picker_labels">
+        <item>@string/theme_light_label</item>
+        <item>@string/theme_dark_label</item>
+    </string-array>
+
+    <string-array name="theme_style_picker_value">
+        <item>@string/theme_light_value</item>
+        <item>@string/theme_dark_value</item>
+    </string-array>
+
 </resources>

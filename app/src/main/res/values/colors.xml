@@ -4,6 +4,10 @@
     <color name="colorPrimaryDark">#2196F3</color>
     <color name="colorAccent">#10CAC9</color>
 
+    <color name="colorPrimary2">#000000</color>
+    <color name="colorPrimaryDark2">#222222</color>
+    <color name="colorAccent2">#555555</color>
+
     <color name="textColorEarthquakeDetails">#B4BAC0</color>
     <color name="textColorEarthquakeLocation">#2B3D4D</color>
 

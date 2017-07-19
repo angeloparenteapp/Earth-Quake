@@ -2,11 +2,29 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/settings_title">
 
+    <SwitchPreference
+        android:defaultValue="@string/use_my_location_key_default"
+        android:key="@string/use_my_location_key"
+        android:title="@string/use_my_location_title" />
+
     <ListPreference
         android:defaultValue="@string/date_picker_default"
         android:entries="@array/settings_date_picker_labels"
         android:entryValues="@array/settings_date_picker_values"
         android:key="@string/date_picker_key"
         android:title="@string/date_picker_label" />
+
+    <PreferenceCategory
+        android:key="group_key"
+        android:title="@string/group_name">
+
+        <ListPreference
+            android:defaultValue="@string/theme_picker_default"
+            android:entries="@array/theme_style_picker_labels"
+            android:entryValues="@array/theme_style_picker_value"
+            android:key="@string/theme_picker_key"
+            android:title="@string/theme_picker" />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

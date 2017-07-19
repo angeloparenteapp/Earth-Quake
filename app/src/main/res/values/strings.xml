@@ -6,11 +6,36 @@
     <string name="json_error">Json Error</string>
     <string name="server_unknown_error">Server error: </string>
     <string name="no_earthquakes">No earthquakes\n Try to change parameter in settings</string>
-    <string name="settings_menu_item">Settings</string>
-    <string name="settings_title">Earthquake Settings</string>
 
-    <string name="banner_ad_unit_id">Your id</string>
-    <string name="interstitial_id">Your id</string>
+    <string name="settings_menu_item">Settings</string>
+    <string name="theme">Theme</string>
+
+    <string name="group_name">Theme</string>
+
+    <string name="theme_picker_key">theme_picker_key</string>
+    <string name="theme_picker">Choose the Theme</string>
+
+    <string name="theme_picker_default">Light</string>
+
+    <string name="theme_light_label">Light</string>
+    <string name="theme_dark_label">Dark</string>
+
+    <string name="theme_light_value">Light</string>
+    <string name="theme_dark_value">Dark</string>
+
+    <string name="settings_title">Earthquake Settings</string>
+    <string name="need_internet">You need internet to update</string>
+
+    <string name="use_my_location_key">my_location_key</string>
+    <string name="use_my_location_key_default">true</string>
+    <string name="use_my_location_title">Use my location</string>
+
+    <string name="title_location_permission">Location Permission</string>
+    <string name="text_location_permission">Allow location to see earthquakes in your area</string>
+    <string name="ok">OK</string>
+
+    <string name="banner_ad_unit_id">ca-app-pub-2203645065011301/4070777279</string>
+    <string name="interstitial_id">ca-app-pub-2203645065011301~2594044072</string>
 
     <string name="date_picker_key">date_picker_key</string>
     <string name="date_picker_label">Select the start date</string>
