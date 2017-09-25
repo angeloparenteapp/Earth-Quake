@@ -27,7 +27,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -167,10 +166,7 @@ public class MainActivityFragment extends Fragment {
                         }
                     } else if (count > 2) {
                         count = 0;
-
-                        if (mInterstitialAd.isLoaded()) {
-                            mInterstitialAd.show();
-                        }
+                        mInterstitialAd.show();
                     }
                 } else {
                     if (getView() != null) {
@@ -210,8 +206,10 @@ public class MainActivityFragment extends Fragment {
                     public void onErrorResponse(VolleyError error) {
                         if (error == null) {
                             mEmptyStateTextView.setText(R.string.error_400);
+                            swipeRefreshLayout.setRefreshing(false);
                         } else {
-                            startVolley();
+                            mEmptyStateTextView.setText(R.string.server_unknown_error);
+                            swipeRefreshLayout.setRefreshing(false);
                         }
                         swipeRefreshLayout.setRefreshing(false);
                     }
@@ -317,7 +315,7 @@ public class MainActivityFragment extends Fragment {
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                     android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-                
+
                 new AlertDialog.Builder(getContext())
                         .setTitle(R.string.title_location_permission)
                         .setMessage(R.string.text_location_permission)

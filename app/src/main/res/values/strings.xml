@@ -4,7 +4,7 @@
     <string name="no_internet">You need an internet connection.</string>
     <string name="error_400">Error 400: Bed Request</string>
     <string name="json_error">Json Error</string>
-    <string name="server_unknown_error">Server error: </string>
+    <string name="server_unknown_error">Unknown Error \n Try again later </string>
     <string name="no_earthquakes">No earthquakes\n Try to change parameter in settings</string>
 
     <string name="settings_menu_item">Settings</string>
